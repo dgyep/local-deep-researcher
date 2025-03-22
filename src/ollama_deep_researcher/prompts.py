@@ -9,6 +9,7 @@ query_writer_instructions="""Your goal is to generate a targeted web search quer
 <CONTEXT>
 Current date: {current_date}
 Please ensure your queries account for the most current information available as of this date.
+Format the query in a way to NOT include items specified in the topic.
 </CONTEXT>
 
 <TOPIC>

@@ -24,10 +24,15 @@ class Configuration(BaseModel):
         title="LLM Model Name",
         description="Name of the LLM model to use"
     )
-    llm_provider: Literal["ollama", "lmstudio"] = Field(
+    llm_provider: Literal["ollama", "lmstudio", "openai"] = Field(
         default="ollama",
         title="LLM Provider",
-        description="Provider for the LLM (Ollama or LMStudio)"
+        description="Provider for the LLM (Ollama, LMStudio, or OpenAI)"
+    )
+    openai_model: str = Field(
+        default="gpt-4-turbo",
+        title="OpenAI Model",
+        description="OpenAI model to use"
     )
     search_api: Literal["perplexity", "tavily", "duckduckgo", "searxng"] = Field(
         default="duckduckgo",
@@ -48,6 +53,11 @@ class Configuration(BaseModel):
         default="http://localhost:1234/v1",
         title="LMStudio Base URL",
         description="Base URL for LMStudio OpenAI-compatible API"
+    )
+    openai_api_key: str = Field(
+        default="",
+        title="OpenAI API Key",
+        description="API key for OpenAI"
     )
     strip_thinking_tokens: bool = Field(
         default=True,

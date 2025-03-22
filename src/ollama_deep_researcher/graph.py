@@ -5,6 +5,7 @@ from typing_extensions import Literal
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_ollama import ChatOllama
+from langchain_openai import ChatOpenAI
 from langgraph.graph import START, END, StateGraph
 
 from ollama_deep_researcher.configuration import Configuration, SearchAPI
@@ -18,7 +19,7 @@ def generate_query(state: SummaryState, config: RunnableConfig):
     """LangGraph node that generates a search query based on the research topic.
     
     Uses an LLM to create an optimized search query for web research based on
-    the user's research topic. Supports both LMStudio and Ollama as LLM providers.
+    the user's research topic. Supports both LMStudio, Ollama, and OpenAI as LLM providers.
     
     Args:
         state: Current graph state containing the research topic
@@ -45,6 +46,13 @@ def generate_query(state: SummaryState, config: RunnableConfig):
             model=configurable.local_llm, 
             temperature=0, 
             format="json"
+        )
+    elif configurable.llm_provider == "openai":
+        llm_json_mode = ChatOpenAI(
+            api_key=configurable.openai_api_key,
+            model=configurable.openai_model,
+            temperature=0,
+            response_format={"type": "json_object"}
         )
     else: # Default to Ollama
         llm_json_mode = ChatOllama(
@@ -155,6 +163,12 @@ def summarize_sources(state: SummaryState, config: RunnableConfig):
             model=configurable.local_llm, 
             temperature=0
         )
+    elif configurable.llm_provider == "openai":
+        llm = ChatOpenAI(
+            api_key=configurable.openai_api_key,
+            model=configurable.openai_model,
+            temperature=0
+        )
     else:  # Default to Ollama
         llm = ChatOllama(
             base_url=configurable.ollama_base_url, 
@@ -199,6 +213,13 @@ def reflect_on_summary(state: SummaryState, config: RunnableConfig):
             model=configurable.local_llm, 
             temperature=0, 
             format="json"
+        )
+    elif configurable.llm_provider == "openai":
+        llm_json_mode = ChatOpenAI(
+            api_key=configurable.openai_api_key,
+            model=configurable.openai_model,
+            temperature=0,
+            response_format={"type": "json_object"}
         )
     else: # Default to Ollama
         llm_json_mode = ChatOllama(
